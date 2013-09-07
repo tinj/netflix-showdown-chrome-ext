@@ -1,0 +1,28 @@
+{
+    "manifest_version": 2,
+    "name" : "Netflix Showdown",
+    "version" : "0.1.1",
+    "description" : "Quickly decide what to watch on Netflix",
+    "browser_action" : {
+        "default_icon" : "img/logo.png",
+        "default_title" : "Netflix Showdown",
+        "default_popup" : "popup.html"
+        },
+    "content_scripts": [
+            {
+              "matches": ["http://*.netflix.com/*"],
+              "js": ["libs/jquery-2.0.3.min.js", "js/showdown.js"]
+            }
+        ],
+    "permissions": [
+        "http://*.netflix.com/*"
+    ],
+    "web_accessible_resources": [
+        "css/showdown.css"
+    ],
+
+    "icons": {
+           "48": "img/netflix-48.png",
+          "128": "img/netflix-128.png"
+    }
+}
