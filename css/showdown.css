@@ -1,0 +1,152 @@
+/*imdb-style*/
+.star-box-giga-star {
+  background-position: -180px -71px;
+  width: 66px;
+  height: 66px;
+  line-height: 66px;
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 15px;
+  font-weight: bold;
+  color: black;
+  font-family: tahoma;
+}
+
+.imdb-icon {
+  background-image: url('../img/imdbSprite.png');
+  display: inline-block;
+  vertical-align: middle;
+  margin-bottom: 15px;
+  margin-left: 10px;
+  margin-top: 5px;
+}
+
+/*tomato-style*/
+.tomato-icon {
+  display: inline-block;
+  vertical-align: text-bottom;
+  background: transparent url('../img/tomatoSprite.png') no-repeat -312px -160px;
+}
+
+.med.rotten {
+  background-position: -96px -129px;
+}
+
+.med.fresh {
+  background-position: -64px -129px;
+}
+
+.tomato-icon.med {
+  width: 32px;
+  height: 32px;
+}
+
+.tomato-score {
+  vertical-align: 7px;
+}
+
+.tomato-wrapper {
+  padding-left:11px;
+}
+
+/*netflix-style*/
+.label {
+    margin-bottom: 15px !important;
+}
+
+.rating-link {
+  text-decoration:none !important;
+  color:black !important;
+  padding:5px;
+  padding-left: 0px;
+}
+
+.dvd-popup {
+  margin-bottom: -15px;
+  margin-top: -29px;
+  margin-left: 74px;
+}
+
+.dvd-search-page {
+  margin-bottom: 10px;
+  margin-top: -6px;
+  margin-left: 0px;
+}
+
+.wi-search-page {
+  margin-bottom: -4px;
+  margin-top: -30px;
+  margin-left: 13px;
+}
+
+.nav-timers {
+  padding: 0;
+  max-width: 150px !important;
+  width: 150px;
+}
+
+.nav-timers .boxShot {
+  width: 48px !important;
+  height: auto;
+  display: inline-block;
+  margin-right: 2px;
+}
+
+.nav-timers .boxShot img {
+  width: 48px !important;
+  height: auto;
+}
+
+.nav-timers .boxShot a {
+  width: 48px !important;
+  height: auto !important;
+}
+
+.timer-hidden {
+  display: none;
+}
+
+.showdown-link {
+  color: purple !important;
+  font-size: 20px;
+  float: right;
+}
+
+.showdown-modal {
+  z-index: 9999;
+  width: 50%;
+  height: 500px;
+  position: fixed;
+  top: 110px;
+  left: 50%;
+  margin-left: -25%;
+  background-color: #fff;
+  border: 1px black solid;
+  padding: 20px;
+}
+
+.modal-timer {
+  max-width: 70px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.modal-finalists {
+  /*max-width: 90%;*/
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.winner-chosen {
+  opacity: 0.2;
+}
+
+.showdown-winner {
+  opacity: 1;
+}
+
+.showdown-modal .boxShot {
+  display: inline-block;
+  margin: 20px;
+}
