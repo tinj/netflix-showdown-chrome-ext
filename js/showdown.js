@@ -8,6 +8,9 @@
 // plot  short, full     short or extended plot (short default)
 // callback  name (optional)     JSONP callback name
 // tomatoes  true (optional)     adds rotten tomatoes data
+
+console.log('loading showdown.js');
+
 var IMDB_API =  "http://www.omdbapi.com/?tomatoes=true";
 var TOMATO_LINK = "http://www.rottentomatoes.com/search/?sitesearch=rt&search=";
 var IMDB_LINK = "http://www.imdb.com/title/";
@@ -613,6 +616,9 @@ function startPlaying (url) {
 ///////// INIT /////////////
 $(document).ready(function() {
   //common select objects
+  console.log('document ready');
+
+
   var dvdSelObj = selectObj('.bobMovieRatings', 'append', 800, 'dvd-popup');
   var WiObj = selectObj('.midBob', 'append', 700);
 
