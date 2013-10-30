@@ -618,6 +618,10 @@ $(document).ready(function() {
   //common select objects
   console.log('document ready');
 
+  chrome.runtime.sendMessage({method: "getLocalStorage", key: "total_time"}, function (response) {
+    console.log(response.data);
+  });
+
 
   var dvdSelObj = selectObj('.bobMovieRatings', 'append', 800, 'dvd-popup');
   var WiObj = selectObj('.midBob', 'append', 700);

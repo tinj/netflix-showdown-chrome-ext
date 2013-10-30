@@ -24,7 +24,10 @@
         "img/imdbSprite.png",
         "img/tomatoSprite.png"
     ],
-
+    "background": {
+        "scripts": ["js/background.js"],
+        "persistent": false
+    },
     "icons": {
            "48": "img/netflix-48.png",
           "128": "img/netflix-128.png"
