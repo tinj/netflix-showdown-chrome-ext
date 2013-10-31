@@ -120,10 +120,10 @@
   position: fixed;
   top: 20px;
   right: 20px;
-  width: 300px;
+  width: 155px;
   z-index: 209;
   height: 70px;
-  background-color: black;
+  background-color: #7602D2; /*#b9090b;*/
 
 }
 
@@ -131,32 +131,34 @@
   float: left;
 }
 
+.showdown .boxShot {
+  border: 1px solid #a4a4a4;
+}
+
 .showdown .selected .boxShot {
-  height: 70px !important;
+  height: 68px !important;
   width: auto !important;
 }
 
 .showdown .selected .boxShotImg {
-  height: 70px !important;
+  height: 68px !important;
   width: auto !important;
 }
 
 .showdown .selected .bobbable {
-  height: 70px !important;
+  height: 68px !important;
   width: auto !important;
 }
 
 .showdown-modal {
-  z-index: 209;
-  width: 50%;
-  height: 500px;
-  position: fixed;
+  width: 620px;
+  height: 400px;
   top: 110px;
   left: 50%;
-  margin-left: -25%;
-  background-color: #fff;
+  margin-left: -310px;
+  background-color: #e1e1e1;
   border: 1px black solid;
-  padding: 20px;
+  /*padding: 20px;*/
 }
 
 .showdown .finalist {

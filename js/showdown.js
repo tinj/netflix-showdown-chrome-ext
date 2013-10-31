@@ -438,14 +438,14 @@ var Timer = function (id, timeRemaining, color) {
       });
     }
     that.interval = setInterval(function () {
-      that.timeRemaining -= 0.1;
+      that.timeRemaining -= 0.02;
       that.updateChart();
 
       if (0 >= that.timeRemaining) {
         that.stop();
         if (callback) callback();
       }
-    }, 100);
+    }, 20);
   };
 
   this.stop = function () {
@@ -566,7 +566,7 @@ function launchModal () {
   ].join('');
   $('.showdown').prepend($(modalHTML));
   convertToModal();
-  timers.push(new Timer(3, 15, 'red'));
+  timers.push(new Timer(3, 15, '#7602D2'));
   timers[3].getChart();
   timers[3].start(pickWinner);
   console.log(timers[3]);
@@ -616,7 +616,7 @@ function finalCountdown (winner) {
 }
 
 function startPlaying (url) {
-  window.open(url, '_parent');
+  // window.open(url, '_parent');
 }
 
 
