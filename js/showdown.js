@@ -420,13 +420,17 @@ var timers = [];
 var currTimer = 0;
 
 var Timer = function (id, timeRemaining, color) {
-  this.id = id;
-  this.color = color || 'white';
-  this.movie = '';
-  this.url = '';
-  this.timeRemaining = timeRemaining || 30;
-  this.timeStart = timeRemaining || 30;
-  this.$el = $('#timer-'+id);
+  this.init = function (id, timeRemaining, color) {
+    this.id = id;
+    this.color = color || 'white';
+    this.movie = '';
+    this.url = '';
+    this.timeRemaining = timeRemaining || 30;
+    this.timeStart = timeRemaining || 30;
+    this.$el = $('#timer-'+id);
+
+    this.chart = getCharts(this.$el, id, this.formatTime());
+  };
 
   this.start = function (callback) {
     var that = this;
@@ -456,19 +460,30 @@ var Timer = function (id, timeRemaining, color) {
     }
   };
 
-  this.getChart = function () {
-    this.chart = getCharts(this.$el, this.id, this.color);
+  this.updateChart = function () {
+    this.chart.update(this.formatTime());
   };
 
-  this.updateChart = function () {
-    this.chart.update(formatTime(this.id, this.color));
+  this.formatTime = function () {
+    return [
+      {
+        value : this.timeRemaining,
+        color : this.color || 'white'
+      },
+      {
+        value: this.timeStart - this.timeRemaining,
+        color : 'none'
+      }
+    ];
   };
+
+  this.init(id, timeRemaining, color);
 };
 
 
-function getCharts ($el, id, color) {
+function getCharts ($el, id, data) {
   var ctx = $el[0].getContext('2d');
-  return new Chart(ctx).Doughnut(formatTime(id, color), {
+  return new Chart(ctx).Doughnut(data, {
     animation: true,
     percentageInnerCutout: 80,
     count: true,
@@ -483,18 +498,18 @@ function getCharts ($el, id, color) {
   });
 }
 
-function formatTime (id, color) {
-  return [
-    {
-      value : timers[id].timeRemaining,
-      color : color || 'white'
-    },
-    {
-      value: timers[id].timeStart - timers[id].timeRemaining,
-      color : 'none'
-    }
-  ];
-}
+// function formatTime (id, color) {
+//   return [
+//     {
+//       value : timers[id].timeRemaining,
+//       color : color || 'white'
+//     },
+//     {
+//       value: timers[id].timeStart - timers[id].timeRemaining,
+//       color : 'none'
+//     }
+//   ];
+// }
 
 var allMovies = [];//['dbs70143836_0','dbs70230088_0','dbs70242311_0'];
 
@@ -514,6 +529,11 @@ function addTimers () {
       '<canvas id="timer-2" width="50" height="68"></canvas>',
     '</div>'
   ].join(''));
+  for (var i=0; i<3; i++) {
+    timers.push(new Timer(i, 15));
+    // timer.getChart();
+  }
+
 }
 
 function showTimers () {
@@ -567,7 +587,7 @@ function launchModal () {
   $('.showdown').prepend($(modalHTML));
   convertToModal();
   timers.push(new Timer(3, 15, '#7602D2'));
-  timers[3].getChart();
+  // timers[3].getChart();
   timers[3].start(pickWinner);
   console.log(timers[3]);
 }
@@ -609,7 +629,7 @@ function finalCountdown (winner) {
   var finalTimer = new Timer(4, 10, 'green');
   timers.push(finalTimer);
   finalTimer.$el.removeClass('timer-hidden');
-  finalTimer.getChart();
+  // finalTimer.getChart();
   finalTimer.start(function () {
     startPlaying(getWinnerUrl(winner));
   });
@@ -662,7 +682,7 @@ $(document).ready(function() {
   var timersHTML = [
     '<li id="nav-timers" class="nav-timers nav-item dropdown-trigger">',
       '<span class="i-b content">',
-        '<a href="#" id="nav-showdown-link">60s Showdown</a>',
+        '<a href="#" id="nav-showdown-link">Showdown</a>',
         // '<span class="right-arrow"></span>',
         // '<canvas id="timer-0" width="50" height="68" class="timer-hidden"></canvas>',
         // '<canvas id="timer-1" width="50" height="68" class="timer-hidden"></canvas>',
@@ -678,16 +698,13 @@ $(document).ready(function() {
   // console.log($navbar);
   $navbar.append(timersHTML);
 
+
   addTimers();
-  for (var i=0; i<3; i++) {
-    var timer = new Timer(i, 15);
-    timers.push(timer);
-    timer.getChart();
-  }
 
   var $showdown = $('#nav-showdown-link');
   $showdown.on('click', function (evt) {
     $showdown.hide();
+    $('.mrows').addClass('sd');
     showTimers();
     timers[0].start(getRandom);
   });

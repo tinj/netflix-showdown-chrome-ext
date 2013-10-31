@@ -22,7 +22,9 @@
     "web_accessible_resources": [
         "css/showdown.css",
         "img/imdbSprite.png",
-        "img/tomatoSprite.png"
+        "img/tomatoSprite.png",
+        "img/showdown-add.png"
+
     ],
     "background": {
         "scripts": ["js/background.js"],

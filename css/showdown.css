@@ -80,12 +80,6 @@
   margin-left: 13px;
 }
 
-.nav-timers {
-  padding: 0;
-  max-width: 150px !important;
-  width: 150px;
-}
-
 .nav-timers .boxShot {
   width: 48px !important;
   height: auto;
@@ -151,14 +145,14 @@
 }
 
 .showdown-modal {
-  width: 620px;
-  height: 400px;
+  width: 624px;
+  height: 370px;
   top: 110px;
   left: 50%;
-  margin-left: -310px;
+  margin-left: -312px;
   background-color: #e1e1e1;
   border: 1px black solid;
-  /*padding: 20px;*/
+  padding-top: 20px;
 }
 
 .showdown .finalist {
@@ -188,4 +182,16 @@
 .showdown-modal .boxShot {
   display: inline-block;
   margin: 20px;
+}
+
+.add-btn {
+  float: right;
+  color: #7602D2;
+  font-size: 62px;
+  text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+  line-height: 0.9;
+}
+
+.sd span.boxShot-197 a.playLink:hover, .sd span.boxShot-197 a.playLinkNotBobbable:hover, .sd span.boxShot-197.active > a.playLink, .sd span.boxShot-197.active > a.playLinkNotBobbable, .sd span.boxShot-166 a.playLink:hover, .sd span.boxShot-166 a.playLinkNotBobbable:hover, .sd span.boxShot-166.active > a.playLink, .sd span.boxShot-166.active > a.playLinkNotBobbable, .sd span.boxShot-150 a.playLink:hover, .sd span.boxShot-150 a.playLinkNotBobbable:hover, .sd span.boxShot-150.active > a.playLink, .sd span.boxShot-150.active > a.playLinkNotBobbable {
+  background-image: url("../img/showdown-add.png");
 }
