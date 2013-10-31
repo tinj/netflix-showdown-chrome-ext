@@ -330,7 +330,7 @@ function displayRating(rating, args) {
     console.log(evt);
     var id = evt.target.parentElement.parentElement.firstElementChild.id;
     console.log(id);
-    movieSelected($('#'+id).parent(), id);
+    movieSelected($('#'+id).parent().parent(), id);
   });
 }
 
@@ -506,6 +506,20 @@ function getAllIds () {
   console.log(allMovies);
 }
 
+function addTimers () {
+  $('#bd').prepend([
+    '<div class="showdown">',
+      '<canvas id="timer-0" width="50" height="68"></canvas>',
+      '<canvas id="timer-1" width="50" height="68"></canvas>',
+      '<canvas id="timer-2" width="50" height="68"></canvas>',
+    '</div>'
+  ].join(''));
+}
+
+function showTimers () {
+  $(".showdown").show();
+}
+
 function pickMovie () {
   console.log('pick random');
   // return allMovies.pop();
@@ -514,11 +528,9 @@ function pickMovie () {
 
 function getRandom () {
   var id = pickMovie();
-  var selected = $('#'+id);
+  var selected = $('#'+id).parent();
   movieSelected(selected, id);
 }
-
-
 
 function movieSelected ($el, id) {
   var timer = timers[currTimer];
@@ -545,7 +557,6 @@ function startNextTimer () {
 }
 
 function launchModal () {
-
   var modalHTML = [
     '<div class="showdown-modal">',
       '<div class="modal-timer">',
@@ -649,17 +660,14 @@ $(document).ready(function() {
     $(document).on('mouseenter', selector, parser, eventHandler);
   });
 
-  getAllIds();
-
-
   var timersHTML = [
     '<li id="nav-timers" class="nav-timers nav-item dropdown-trigger">',
       '<span class="i-b content">',
         '<a href="#" id="nav-showdown-link">60s Showdown</a>',
         // '<span class="right-arrow"></span>',
-        '<canvas id="timer-0" width="50" height="68" class="timer-hidden"></canvas>',
-        '<canvas id="timer-1" width="50" height="68" class="timer-hidden"></canvas>',
-        '<canvas id="timer-2" width="50" height="68" class="timer-hidden"></canvas>',
+        // '<canvas id="timer-0" width="50" height="68" class="timer-hidden"></canvas>',
+        // '<canvas id="timer-1" width="50" height="68" class="timer-hidden"></canvas>',
+        // '<canvas id="timer-2" width="50" height="68" class="timer-hidden"></canvas>',
       '</span>',
       '<span class="i-b shim"></span>',
       '<span class="down-arrow"></span>',
@@ -671,6 +679,7 @@ $(document).ready(function() {
   // console.log($navbar);
   $navbar.append(timersHTML);
 
+  addTimers();
   for (var i=0; i<3; i++) {
     var timer = new Timer(i, 15);
     timers.push(timer);
@@ -680,13 +689,14 @@ $(document).ready(function() {
   var $showdown = $('#nav-showdown-link');
   $showdown.on('click', function (evt) {
     $showdown.hide();
-    _.each(timers, function (timer) {
-      timer.$el.removeClass('timer-hidden');
-    });
+    showTimers();
+    // _.each(timers, function (timer) {
+    //   timer.$el.removeClass('timer-hidden');
+    // });
     timers[0].start(getRandom);
   });
+
+  getAllIds();
 });
 
-
-// pick a random item if time expires
-
+// popover inside id="bd"

@@ -150,3 +150,34 @@
   display: inline-block;
   margin: 20px;
 }
+
+.showdown {
+  display: none;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 300px;
+  z-index: 3000;
+  height: 70px;
+  background-color: black;
+
+}
+
+.showdown div {
+  float: left;
+}
+
+.showdown .boxShot {
+  height: 70px !important;
+  width: auto !important;
+}
+
+.showdown .boxShotImg {
+  height: 70px !important;
+  width: auto !important;
+}
+
+.showdown .bobbable {
+  height: 70px !important;
+  width: auto !important;
+}
