@@ -113,8 +113,41 @@
   float: right;
 }
 
+
+
+.showdown {
+  display: none;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 300px;
+  z-index: 209;
+  height: 70px;
+  background-color: black;
+
+}
+
+.showdown .selected {
+  float: left;
+}
+
+.showdown .selected .boxShot {
+  height: 70px !important;
+  width: auto !important;
+}
+
+.showdown .selected .boxShotImg {
+  height: 70px !important;
+  width: auto !important;
+}
+
+.showdown .selected .bobbable {
+  height: 70px !important;
+  width: auto !important;
+}
+
 .showdown-modal {
-  z-index: 9999;
+  z-index: 209;
   width: 50%;
   height: 500px;
   position: fixed;
@@ -124,6 +157,10 @@
   background-color: #fff;
   border: 1px black solid;
   padding: 20px;
+}
+
+.showdown .finalist {
+  float: left;
 }
 
 .modal-timer {
@@ -149,35 +186,4 @@
 .showdown-modal .boxShot {
   display: inline-block;
   margin: 20px;
-}
-
-.showdown {
-  display: none;
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  width: 300px;
-  z-index: 3000;
-  height: 70px;
-  background-color: black;
-
-}
-
-.showdown div {
-  float: left;
-}
-
-.showdown .boxShot {
-  height: 70px !important;
-  width: auto !important;
-}
-
-.showdown .boxShotImg {
-  height: 70px !important;
-  width: auto !important;
-}
-
-.showdown .bobbable {
-  height: 70px !important;
-  width: auto !important;
 }

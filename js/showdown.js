@@ -539,6 +539,7 @@ function movieSelected ($el, id) {
   if (hsrc) {
     $img.attr('src', hsrc);
   }
+  $el.addClass('selected');
   timer.$target = $el;
   timer.$el.after(timer.$target);
   timer.$el.hide();
@@ -558,28 +559,26 @@ function startNextTimer () {
 
 function launchModal () {
   var modalHTML = [
-    '<div class="showdown-modal">',
-      '<div class="modal-timer">',
-        '<canvas id="timer-3" width="70" height="90"></canvas>',
-        '<canvas id="timer-4" width="70" height="90" class="timer-hidden"></canvas>',
-      '</div>',
-      '<div class="modal-finalists"></div>',
-    '</div>'
+    '<div class="modal-timer">',
+      '<canvas id="timer-3" width="70" height="90"></canvas>',
+      '<canvas id="timer-4" width="70" height="90" class="timer-hidden"></canvas>',
+    '</div>',
   ].join('');
-  $('body').prepend($(modalHTML));
-  moveToModal();
+  $('.showdown').prepend($(modalHTML));
+  convertToModal();
   timers.push(new Timer(3, 15, 'red'));
   timers[3].getChart();
   timers[3].start(pickWinner);
   console.log(timers[3]);
 }
 
-function moveToModal () {
-  var modal = $('.showdown-modal .modal-finalists');
+function convertToModal () {
+  $('.showdown').addClass('showdown-modal');
   _.each(timers, function (timer) {
+    timer.$target.toggleClass('selected finalist');
     // console.log(timer.$target);
     // console.log(timer.targetId);
-    modal.append(timer.$target);
+    // modal.append(timer.$target);
     timer.$target.on('click', function (evt) {
       evt.preventDefault();
       console.log(evt);
@@ -656,7 +655,7 @@ $(document).ready(function() {
   addStyle(); //add ratings.css to the page
   searchSetup(); // check if this is a search page
 
-  $.each(HOVER_SEL, function(selector, parser){ //add listeners for each hover selector
+  $.each(HOVER_SEL, function (selector, parser){ //add listeners for each hover selector
     $(document).on('mouseenter', selector, parser, eventHandler);
   });
 
@@ -690,13 +689,8 @@ $(document).ready(function() {
   $showdown.on('click', function (evt) {
     $showdown.hide();
     showTimers();
-    // _.each(timers, function (timer) {
-    //   timer.$el.removeClass('timer-hidden');
-    // });
     timers[0].start(getRandom);
   });
 
   getAllIds();
 });
-
-// popover inside id="bd"
