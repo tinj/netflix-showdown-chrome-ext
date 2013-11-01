@@ -411,6 +411,15 @@ function getShowdownHtml(title, klass) {
 var timers = [];
 var currTimer = 0;
 
+var timerTimes = {
+  "1" : [15, 15, 15, 15], // 60
+  "3" : [55, 55, 50, 20], // 180
+  "5" : [90, 90, 90, 30]  // 300
+};
+
+var timeIndex = 1;
+
+
 var Timer = function (id, duration, color) {
   this.init = function (id, duration, color) {
     this.id = id;
@@ -532,7 +541,8 @@ function addTimers () {
     '</div>'
   ].join('')).hide().prependTo('#bd');
   for (var i=0; i<3; i++) {
-    timers.push(new Timer(i, 15));
+    // console.log(i, timeIndex, timerTimes[timeIndex], timerTimes[timeIndex][i]);
+    timers.push(new Timer(i, timerTimes[timeIndex][i]));
   }
 }
 
@@ -618,7 +628,7 @@ function launchModal () {
   $('<div class="modal-backdrop" />').appendTo(document.body);
   $('#BobMovie').hide(); // hide popover
   convertToModal();
-  timers.push(new Timer(3, 15));
+  timers.push(new Timer(3, timerTimes[timeIndex][3]));
 
   // timers[3].getChart();
   timers[3].start(pickWinner);
@@ -632,9 +642,6 @@ function convertToModal () {
   _.each(timers, function (timer) {
     timer.$target.toggleClass('selected finalist');
     timer.$target.find('a').off();
-    // console.log(timer.$target);
-    // console.log(timer.targetId);
-    // modal.append(timer.$target);
     timer.$target.one('click', function (evt) {
       evt.preventDefault();
       evt.stopPropagation();
@@ -669,7 +676,6 @@ function finalCountdown (winner) {
   var finalTimer = new Timer(4, 7);
   timers.push(finalTimer);
   finalTimer.$el.removeClass('timer-hidden');
-  // finalTimer.getChart();
   finalTimer.start(function () {
     startPlaying(getWinnerUrl(winner));
   });
@@ -681,7 +687,96 @@ function startPlaying (url) {
 
 
 
-// function ()
+
+var Stopwatch = function (color) {
+  this.init = function (color) {
+    this.color = color || 'white';
+    this.$el = $('#stopwatch');
+
+    this.moment = moment();
+    this.chart = this.getChart();
+    this.start(startShowdown);
+  };
+
+  this.start = function (callback) {
+    var that = this;
+    console.log('start');
+    if (callback) {
+      that.$el.one('click', function (evt) {
+        evt.preventDefault();
+        that.stop();
+        callback();
+      });
+    }
+    that.interval = setInterval(function () {
+      that.updateChart();
+    }, 20);
+  };
+
+  this.stop = function () {
+    if (this.interval) {
+      console.log('stopwatch stopped');
+      clearInterval(this.interval);
+      this.interval = undefined;
+      this.updateChart();
+    }
+  };
+
+  this.getChart = function () {
+    var ctx = this.$el[0].getContext('2d');
+    return new Chart(ctx).Doughnut(this.formatTime(), {
+      animation: true,
+      percentageInnerCutout: 80,
+      count: true,
+      countColor: 0,
+      mod: 60000,
+      countModifier: 1000, // milliseconds
+      segmentShowStroke: false,
+      // segmentStrokeWidth: 1,
+      // segmentStrokeColor: "#fff",
+      onAnimationComplete: function () {
+        this.animation = false;
+      }
+    });
+  };
+
+  this.updateChart = function () {
+    this.chart.update(this.formatTime());
+  };
+
+  this.formatTime = function () {
+    return [
+      {
+        value : -this.moment.diff(),
+        color : this.color || 'white'
+      }
+    ];
+  };
+
+  this.init(color);
+};
+
+var $showdown, stopwatch;;
+
+function startShowdown (evt) {
+  // console.log(evt);
+  timeIndex = parseInt(evt.target.attributes[1].value) || 1;
+  console.log(timeIndex);
+  addTimers();
+
+  stopwatch.stop();
+  $showdown.hide();
+  $('.mrows').addClass('sd');
+  var $popover = $('#BobMovie');
+  $popover.find('.bobContent').addClass('sd');
+  $popover.append('<span class="popover-add"><a href="#"><div>+</div></a></span>');
+  $popover.find('.popover-add').on('click', addMovieClick);
+  showTimers();
+  timers[0].start(getRandom);
+
+  $('.mrows a').one('click', posterClick);
+}
+
 
 ///////// INIT /////////////
 $(document).ready(function() {
@@ -720,40 +815,34 @@ $(document).ready(function() {
   });
 
   var timersHTML = [
-    '<li id="nav-timers" class="nav-timers nav-item dropdown-trigger">',
+    '<li id="nav-showdown" class="nav-item dropdown-trigger">',
       '<span class="i-b content">',
-        '<a href="#" id="nav-showdown-link">Showdown</a>',
-        // '<span class="right-arrow"></span>',
-        // '<canvas id="timer-0" width="50" height="68" class="timer-hidden"></canvas>',
-        // '<canvas id="timer-1" width="50" height="68" class="timer-hidden"></canvas>',
-        // '<canvas id="timer-2" width="50" height="68" class="timer-hidden"></canvas>',
+        // '<a href="#" id="nav-showdown-link">Showdown</a>',
+        '<canvas id="stopwatch" width="60" height="60"></canvas>',
+        '<span class="right-arrow"></span>',
       '</span>',
       '<span class="i-b shim"></span>',
+      '<div class="subnav-wrap col-1">',
+        '<ul class="subnav-tabs">',
+          '<li><a href="#" value="1">1 minute Showdown</a></li>',
+          '<li><a href="#" value="3">3 minute Showdown</a></li>',
+          '<li><a href="#" value="5">5 minute Showdown</a></li>',
+        '</ul>',
+        '</div>',
+      '<span class="up-arrow"></span>',
       '<span class="down-arrow"></span>',
       '<span class="down-arrow-shadow"></span>',
     '</li>',
   ].join('');
 
   var $navbar = $('#global-header');
-  // console.log($navbar);
   $navbar.append(timersHTML);
+  stopwatch = new Stopwatch('#fff'); //'#7602D2'
+  // console.log(stopwatch);
 
 
-  addTimers();
-
-  var $showdown = $('#nav-showdown-link');
-  $showdown.one('click', function (evt) {
-    $showdown.hide();
-    $('.mrows').addClass('sd');
-    var $popover = $('#BobMovie');
-    $popover.find('.bobContent').addClass('sd');
-    $popover.append('<span class="popover-add"><a href="#"><div>+</div></a></span>');
-    $popover.find('.popover-add').on('click', addMovieClick);
-    showTimers();
-    timers[0].start(getRandom);
-
-    $('.mrows a').one('click', posterClick);
-  });
+  $showdown = $('#nav-showdown');
+  $showdown.find('a').one('click', startShowdown);
 
   getAllIds();
 });

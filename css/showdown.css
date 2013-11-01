@@ -52,7 +52,7 @@
 
 /*netflix-style*/
 .label {
-    margin-bottom: 15px !important;
+  margin-bottom: 15px !important;
 }
 
 .rating-link {
@@ -80,7 +80,7 @@
   margin-left: 13px;
 }
 
-.nav-timers .boxShot {
+/*.nav-timers .boxShot {
   width: 48px !important;
   height: auto;
   display: inline-block;
@@ -105,7 +105,7 @@
   color: purple !important;
   font-size: 20px;
   float: right;
-}
+}*/
 
 
 
