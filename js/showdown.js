@@ -328,16 +328,6 @@ function displayRating(rating, args) {
   // $('.showdown-link').on('click', addMovieClick);
 }
 
-function addMovieClick (evt) {
-  evt.preventDefault();
-  console.log(evt);
-  var $popover = $('#BobMovie');
-  var id = $popover.find('.agMovie .bobMovieContent a').prop('id');
-  $popover.hide();
-  console.log(id);
-  movieSelected($('#'+id).parent().parent(), id);
-}
-
 ////////SEARCH AND INDIVIDUAL PAGE HANDLERS //////////
 /*
     Determine which search, dvd or watch instantly and display the correct ratings
@@ -526,7 +516,7 @@ function getAllIds () {
 }
 
 function addTimers () {
-  $('#bd').prepend([
+  $([
     '<div class="showdown">',
       '<ul class="timers">',
         '<li>',
@@ -540,7 +530,7 @@ function addTimers () {
         '</li>',
       '<ul>',
     '</div>'
-  ].join(''));
+  ].join('')).hide().prependTo('#bd');
   for (var i=0; i<3; i++) {
     timers.push(new Timer(i, 15));
   }
@@ -559,6 +549,16 @@ function posterClick (evt) {
   movieSelected($target.parent().parent(), id);
 }
 
+function addMovieClick (evt) {
+  evt.preventDefault();
+  console.log(evt);
+  var $popover = $('#BobMovie');
+  var id = $popover.find('.agMovie .bobMovieContent a').prop('id');
+  $popover.hide();
+  console.log(id);
+  movieSelected($('#'+id).parent().parent(), id);
+}
+
 function pickMovie () {
   console.log('pick random');
   // return allMovies.pop();
@@ -572,18 +572,24 @@ function getRandom () {
 }
 
 function movieSelected ($el, id) {
-  var timer = timers[currTimer];
-  var $img = $el.find('img');
-  var hsrc = $img.attr('hsrc');
-  if (hsrc) {
-    $img.attr('src', hsrc);
+  if (timers.length <= 3) {
+    var timer = timers[currTimer];
+    var $img = $el.find('img');
+    var hsrc = $img.attr('hsrc');
+    if (hsrc) {
+      $img.attr('src', hsrc);
+    }
+    $el.addClass('selected');
+    timer.$target = $el;
+    timer.$el.after(timer.$target);
+    timer.$el.hide();
+    timer.targetId = id;
+    startNextTimer();
+  } else {
+    console.log($el);
+    console.log(id);
+    showWinner($el);
   }
-  $el.addClass('selected');
-  timer.$target = $el;
-  timer.$el.after(timer.$target);
-  timer.$el.hide();
-  timer.targetId = id;
-  startNextTimer();
 }
 
 function startNextTimer () {
@@ -633,10 +639,6 @@ function convertToModal () {
       evt.preventDefault();
       evt.stopPropagation();
       console.log(evt);
-      timers[3].stop();
-      _.each(timers, function (timer) {
-        timer.$target.off();
-      });
       showWinner($(evt.currentTarget));
     });
   });
@@ -647,9 +649,12 @@ function pickWinner () {
 }
 
 function showWinner (winner) {
+  timers[3].stop();
+
   winner.addClass('showdown-winner');
   for (var i=0; i<3; i++) {
     timers[i].$target.addClass('winner-chosen');
+    timers[i].$target.off();
   }
   finalCountdown(winner);
 }
@@ -661,7 +666,7 @@ function getWinnerUrl (winner) {
 function finalCountdown (winner) {
   $('.modal-timer p').text("It's Showtime!");
   timers[3].$el.hide();
-  var finalTimer = new Timer(4, 5);
+  var finalTimer = new Timer(4, 7);
   timers.push(finalTimer);
   finalTimer.$el.removeClass('timer-hidden');
   // finalTimer.getChart();
@@ -741,7 +746,8 @@ $(document).ready(function() {
     $showdown.hide();
     $('.mrows').addClass('sd');
     var $popover = $('#BobMovie');
-    $popover.append('<span class="popover-add"><a href="#">+</a></span>');
+    $popover.find('.bobContent').addClass('sd');
+    $popover.append('<span class="popover-add"><a href="#"><div>+</div></a></span>');
     $popover.find('.popover-add').on('click', addMovieClick);
     showTimers();
     timers[0].start(getRandom);

@@ -110,7 +110,7 @@
 
 
 .showdown {
-  display: none;
+  /*display: none;*/
   position: fixed;
   top: 20px;
   right: 20px;
@@ -240,10 +240,18 @@
   top: 1px;
   height: 30px;
   font-size: 43px;
-  text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
   line-height: 0.9;
 }
 
-.popover-add a {
+.popover-add div {
+  float: right;
+  width: 310px;
+  text-align: right;
+  margin-right: 5px;
+  height: 42px;
+}
+
+.popover-add a /*#BobMovie .sd .mdpLink a*/ {
   color: #7602D2;
+  text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
 }
