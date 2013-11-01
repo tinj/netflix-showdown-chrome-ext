@@ -682,7 +682,7 @@ function finalCountdown (winner) {
 }
 
 function startPlaying (url) {
-  // window.open(url, '_parent');
+  window.open(url, '_parent');
 }
 
 
