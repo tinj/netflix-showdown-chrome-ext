@@ -682,6 +682,7 @@ function finalCountdown (winner) {
 }
 
 function startPlaying (url) {
+  $('.modal-backdrop').addClass('blackout');
   window.open(url, '_parent');
 }
 

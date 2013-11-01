@@ -166,6 +166,12 @@
   /*filter: alpha(opacity=50);*/
 }
 
+.blackout {
+  z-index: 9999;
+  opacity: 1;
+  background-color: #000;
+}
+
 .showdown-modal {
   width: 565px;
   height: 366px;
