@@ -760,7 +760,7 @@ var $showdown, stopwatch;;
 
 function startShowdown (evt) {
   // console.log(evt);
-  timeIndex = parseInt(evt.target.attributes[1].value) || 1;
+  timeIndex = evt ? parseInt(evt.target.attributes[1].value) : 1;
   console.log(timeIndex);
   addTimers();
 
@@ -774,7 +774,42 @@ function startShowdown (evt) {
   showTimers();
   timers[0].start(getRandom);
 
+  getAllIds();
   $('.mrows a').one('click', posterClick);
+
+}
+
+function addStopwatch () {
+    var stopwatchHTML = [
+    '<li id="nav-showdown" class="bg-purple nav-item dropdown-trigger">',
+      '<span class="i-b content">',
+        // '<a href="#" id="nav-showdown-link">Showdown</a>',
+        '<canvas id="stopwatch" width="60" height="60"></canvas>',
+        '<span class="right-arrow"></span>',
+      '</span>',
+      '<span class="i-b shim"></span>',
+      '<div class="subnav-wrap col-1">',
+        '<ul class="subnav-tabs">',
+          "<li><p id='nav-title'>Time's ticking ...</p></li>",
+          '<li><a href="#" value="1">1 minute Showdown</a></li>',
+          '<li><a href="#" value="3">3 minute Showdown</a></li>',
+          '<li><a href="#" value="5">5 minute Showdown</a></li>',
+        '</ul>',
+        '</div>',
+      '<span class="up-arrow"></span>',
+      '<span class="down-arrow"></span>',
+      '<span class="down-arrow-shadow"></span>',
+    '</li>',
+  ].join('');
+
+  var $navbar = $('#global-header');
+  $navbar.append(stopwatchHTML);
+  stopwatch = new Stopwatch('#fff'); //'#7602D2'
+  // console.log(stopwatch);
+
+
+  $showdown = $('#nav-showdown');
+  $showdown.find('a').one('click', startShowdown);
 }
 
 
@@ -783,9 +818,9 @@ $(document).ready(function() {
   //common select objects
   console.log('document ready');
 
-  chrome.runtime.sendMessage({method: "getLocalStorage", key: "total_time"}, function (response) {
-    console.log(response.data);
-  });
+  // chrome.runtime.sendMessage({method: "getLocalStorage", key: "total_time"}, function (response) {
+  //   console.log(response.data);
+  // });
 
 
   var dvdSelObj = selectObj('.bobMovieRatings', 'append', 800, 'dvd-popup');
@@ -807,45 +842,16 @@ $(document).ready(function() {
     'WiSearch' : selectObj('.actions', 'append', -1, 'wi-search-page'),
   };
 
-  addStyle(); //add ratings.css to the page
   searchSetup(); // check if this is a search page
 
   $.each(HOVER_SEL, function (selector, parser){ //add listeners for each hover selector
     $(document).on('mouseenter', selector, parser, eventHandler);
   });
-
-  var timersHTML = [
-    '<li id="nav-showdown" class="nav-item dropdown-trigger">',
-      '<span class="i-b content">',
-        // '<a href="#" id="nav-showdown-link">Showdown</a>',
-        '<canvas id="stopwatch" width="60" height="60"></canvas>',
-        '<span class="right-arrow"></span>',
-      '</span>',
-      '<span class="i-b shim"></span>',
-      '<div class="subnav-wrap col-1">',
-        '<ul class="subnav-tabs">',
-          '<li><a href="#" value="1">1 minute Showdown</a></li>',
-          '<li><a href="#" value="3">3 minute Showdown</a></li>',
-          '<li><a href="#" value="5">5 minute Showdown</a></li>',
-        '</ul>',
-        '</div>',
-      '<span class="up-arrow"></span>',
-      '<span class="down-arrow"></span>',
-      '<span class="down-arrow-shadow"></span>',
-    '</li>',
-  ].join('');
-
-  var $navbar = $('#global-header');
-  $navbar.append(timersHTML);
-  stopwatch = new Stopwatch('#fff'); //'#7602D2'
-  // console.log(stopwatch);
-
-
-  $showdown = $('#nav-showdown');
-  $showdown.find('a').one('click', startShowdown);
-
-  getAllIds();
 });
+
+addStyle(); //add ratings.css to the page
+addStopwatch();
+
 
 /*
 popover

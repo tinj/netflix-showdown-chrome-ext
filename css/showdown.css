@@ -107,7 +107,17 @@
   float: right;
 }*/
 
+.bg-purple {
+  background-color: #7602D2;
+}
 
+#nav-showdown {
+  padding-left: 1%;
+}
+
+#nav-title {
+  margin-left: 18px;
+}
 
 .showdown {
   /*display: none;*/
