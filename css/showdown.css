@@ -190,12 +190,13 @@
   font-size: 39px;
   padding-left: 20px;
   color: #fff;
+  line-height: 1.2;
 }
 
 .modal-timer div {
   float: right;
-  padding-right: 64px;
-  padding-top: 5px;
+  padding-right: 70px;
+  padding-top: 10px;
 }
 
 .modal-finalists {
@@ -217,14 +218,6 @@
   margin: 10px;
 }
 
-.add-btn {
-  float: right;
-  color: #7602D2;
-  font-size: 62px;
-  text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
-  line-height: 0.9;
-}
-
 .sd span.boxShot-197 a.playLink:hover, .sd span.boxShot-197 a.playLinkNotBobbable:hover, .sd span.boxShot-197.active > a.playLink, .sd span.boxShot-197.active > a.playLinkNotBobbable, .sd span.boxShot-166 a.playLink:hover, .sd span.boxShot-166 a.playLinkNotBobbable:hover, .sd span.boxShot-166.active > a.playLink, .sd span.boxShot-166.active > a.playLinkNotBobbable, .sd span.boxShot-150 a.playLink:hover, .sd span.boxShot-150 a.playLinkNotBobbable:hover, .sd span.boxShot-150.active > a.playLink, .sd span.boxShot-150.active > a.playLinkNotBobbable {
   background-image: url("../img/showdown-add.png");
 }
@@ -237,4 +230,20 @@
 
 .cf:after {
     clear: both;
+}
+
+.popover-add {
+  position: absolute;
+  width: 30px;
+  right: 17px;
+  z-index: 1000;
+  top: 1px;
+  height: 30px;
+  font-size: 43px;
+  text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+  line-height: 0.9;
+}
+
+.popover-add a {
+  color: #7602D2;
 }

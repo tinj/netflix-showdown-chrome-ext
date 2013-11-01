@@ -324,14 +324,16 @@ function displayRating(rating, args) {
   var $target = $(args.selector);
   // $target[args.insertFunc](imdb);
   // $target[args.insertFunc](tomato);
-  $target[args.insertFunc](showdown);
-  $('.showdown-link').on('click', addMovieClick);
+  // $target[args.insertFunc](showdown);
+  // $('.showdown-link').on('click', addMovieClick);
 }
 
 function addMovieClick (evt) {
   evt.preventDefault();
   console.log(evt);
-  var id = evt.target.parentElement.parentElement.firstElementChild.id;
+  var $popover = $('#BobMovie');
+  var id = $popover.find('.agMovie .bobMovieContent a').prop('id');
+  $popover.hide();
   console.log(id);
   movieSelected($('#'+id).parent().parent(), id);
 }
@@ -598,16 +600,17 @@ function launchModal () {
   var modalHTML = [
     '<div class="modal-timer">',
       '<p>',
-        'Final Showdown',
+        'Final Showdown ...',
       '</p>',
       '<div>',
-        '<canvas id="timer-3" width="70" height="70"></canvas>',
-        '<canvas id="timer-4" width="70" height="70" class="timer-hidden"></canvas>',
+        '<canvas id="timer-3" width="60" height="60"></canvas>',
+        '<canvas id="timer-4" width="60" height="60" class="timer-hidden"></canvas>',
       '</div>',
     '</div>',
   ].join('');
   $('.showdown').prepend($(modalHTML));
   $('<div class="modal-backdrop" />').appendTo(document.body);
+  $('#BobMovie').hide(); // hide popover
   convertToModal();
   timers.push(new Timer(3, 15));
 
@@ -737,6 +740,9 @@ $(document).ready(function() {
   $showdown.one('click', function (evt) {
     $showdown.hide();
     $('.mrows').addClass('sd');
+    var $popover = $('#BobMovie');
+    $popover.append('<span class="popover-add"><a href="#">+</a></span>');
+    $popover.find('.popover-add').on('click', addMovieClick);
     showTimers();
     timers[0].start(getRandom);
 
