@@ -121,6 +121,16 @@
 
 }
 
+.timers {
+  /*width: 100%;*/
+}
+
+.timers li {
+  /*width: 33%;*/
+  float: left;
+  /*position: relative;*/
+}
+
 .showdown .selected {
   float: left;
 }
@@ -129,30 +139,36 @@
   border: 1px solid #a4a4a4;
 }
 
-.showdown .selected .boxShot {
+.showdown .selected .boxShot, .showdown .selected .boxShotImg, .showdown .selected .bobbable {
   height: 68px !important;
   width: auto !important;
 }
 
-.showdown .selected .boxShotImg {
-  height: 68px !important;
-  width: auto !important;
-}
-
-.showdown .selected .bobbable {
-  height: 68px !important;
-  width: auto !important;
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 207;
+  background-color: #000;
+  opacity: 0.5;
+  /*filter: alpha(opacity=50);*/
 }
 
 .showdown-modal {
-  width: 624px;
-  height: 370px;
+  width: 565px;
+  height: 366px;
   top: 110px;
   left: 50%;
-  margin-left: -312px;
-  background-color: #e1e1e1;
+  margin-left: -282px;
+  background-color: #fff;
+  /*background-color: #7602D2;*/
+  /*background-color: #e1e1e1;*/
   border: 1px black solid;
-  padding-top: 20px;
+  padding-left: 10px;
+  padding-right: 10px;
+  /*padding-top: 20px;*/
 }
 
 .showdown .finalist {
@@ -160,9 +176,26 @@
 }
 
 .modal-timer {
-  max-width: 70px;
-  margin-right: auto;
-  margin-left: auto;
+  display: inline-block;
+  width: 585px;
+  background-color: #7602D2;
+  height: 84px;
+  margin-left: -10px;
+  margin-right: -10px;
+  margin-bottom: 10px;
+}
+
+.modal-timer p {
+  float: left;
+  font-size: 39px;
+  padding-left: 20px;
+  color: #fff;
+}
+
+.modal-timer div {
+  float: right;
+  padding-right: 64px;
+  padding-top: 5px;
 }
 
 .modal-finalists {
@@ -181,7 +214,7 @@
 
 .showdown-modal .boxShot {
   display: inline-block;
-  margin: 20px;
+  margin: 10px;
 }
 
 .add-btn {
@@ -194,4 +227,14 @@
 
 .sd span.boxShot-197 a.playLink:hover, .sd span.boxShot-197 a.playLinkNotBobbable:hover, .sd span.boxShot-197.active > a.playLink, .sd span.boxShot-197.active > a.playLinkNotBobbable, .sd span.boxShot-166 a.playLink:hover, .sd span.boxShot-166 a.playLinkNotBobbable:hover, .sd span.boxShot-166.active > a.playLink, .sd span.boxShot-166.active > a.playLinkNotBobbable, .sd span.boxShot-150 a.playLink:hover, .sd span.boxShot-150 a.playLinkNotBobbable:hover, .sd span.boxShot-150.active > a.playLink, .sd span.boxShot-150.active > a.playLinkNotBobbable {
   background-image: url("../img/showdown-add.png");
+}
+
+.cf:before,
+.cf:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+}
+
+.cf:after {
+    clear: both;
 }

@@ -325,16 +325,16 @@ function displayRating(rating, args) {
   // $target[args.insertFunc](imdb);
   // $target[args.insertFunc](tomato);
   $target[args.insertFunc](showdown);
-  $('.showdown-link').on('click', function (evt) {
-    evt.preventDefault();
-    console.log(evt);
-    var id = evt.target.parentElement.parentElement.firstElementChild.id;
-    console.log(id);
-    movieSelected($('#'+id).parent().parent(), id);
-  });
+  $('.showdown-link').on('click', addMovieClick);
 }
 
-
+function addMovieClick (evt) {
+  evt.preventDefault();
+  console.log(evt);
+  var id = evt.target.parentElement.parentElement.firstElementChild.id;
+  console.log(id);
+  movieSelected($('#'+id).parent().parent(), id);
+}
 
 ////////SEARCH AND INDIVIDUAL PAGE HANDLERS //////////
 /*
@@ -415,25 +415,28 @@ function getShowdownHtml(title, klass) {
 
 
 // showdown timer
-var timeRemaining = 60;
+// var timeRemaining = 60;
 var timers = [];
 var currTimer = 0;
 
-var Timer = function (id, timeRemaining, color) {
-  this.init = function (id, timeRemaining, color) {
+var Timer = function (id, duration, color) {
+  this.init = function (id, duration, color) {
     this.id = id;
     this.color = color || 'white';
     this.movie = '';
     this.url = '';
-    this.timeRemaining = timeRemaining || 30;
-    this.timeStart = timeRemaining || 30;
+    this.duration = duration;
+    this.durationMS = duration * 1000;
+    // this.timeRemaining = timeRemaining || 30;
+    // this.timeStart = timeRemaining || 30;
     this.$el = $('#timer-'+id);
 
-    this.chart = getCharts(this.$el, id, this.formatTime());
+    this.chart = getChart(this.$el, id, this.formatTime());
   };
 
   this.start = function (callback) {
     var that = this;
+    that.moment = moment();
     if (callback) {
       that.$el.one('click', function (evt) {
         evt.preventDefault();
@@ -442,10 +445,9 @@ var Timer = function (id, timeRemaining, color) {
       });
     }
     that.interval = setInterval(function () {
-      that.timeRemaining -= 0.02;
       that.updateChart();
 
-      if (0 >= that.timeRemaining) {
+      if (0 >= that.timeRemaining()) {
         that.stop();
         if (callback) callback();
       }
@@ -464,30 +466,43 @@ var Timer = function (id, timeRemaining, color) {
     this.chart.update(this.formatTime());
   };
 
+  this.timeRemaining = function () {
+    if (this.moment) {
+      return this.durationMS + this.moment.diff();
+    } else {
+      return this.durationMS;
+    }
+  };
+
   this.formatTime = function () {
     return [
       {
-        value : this.timeRemaining,
+        value : this.timeRemaining(),
         color : this.color || 'white'
       },
       {
-        value: this.timeStart - this.timeRemaining,
+        value: this.durationMS - this.timeRemaining(),
         color : 'none'
       }
     ];
   };
 
-  this.init(id, timeRemaining, color);
+  // this.removeChart = function () {
+  //   this.$el.remove();
+  // };
+
+  this.init(id, duration, color);
 };
 
 
-function getCharts ($el, id, data) {
+function getChart ($el, id, data) {
   var ctx = $el[0].getContext('2d');
   return new Chart(ctx).Doughnut(data, {
     animation: true,
     percentageInnerCutout: 80,
     count: true,
     countColor: 0,
+    countModifier: 1000, // milliseconds
     placeNumber: ['1st','2nd','3rd'][id],
     segmentShowStroke: false,
     // segmentStrokeWidth: 1,
@@ -498,25 +513,12 @@ function getCharts ($el, id, data) {
   });
 }
 
-// function formatTime (id, color) {
-//   return [
-//     {
-//       value : timers[id].timeRemaining,
-//       color : color || 'white'
-//     },
-//     {
-//       value: timers[id].timeStart - timers[id].timeRemaining,
-//       color : 'none'
-//     }
-//   ];
-// }
-
 var allMovies = [];//['dbs70143836_0','dbs70230088_0','dbs70242311_0'];
 
 function getAllIds () {
   var list = $('.boxShot');
-  allMovies = _.map(list, function (l) {
-    return l.id;
+  allMovies = _.map(list, function (el) {
+    return el.id;
   });
   console.log(allMovies);
 }
@@ -524,20 +526,35 @@ function getAllIds () {
 function addTimers () {
   $('#bd').prepend([
     '<div class="showdown">',
-      '<canvas id="timer-0" width="50" height="68"></canvas>',
-      '<canvas id="timer-1" width="50" height="68"></canvas>',
-      '<canvas id="timer-2" width="50" height="68"></canvas>',
+      '<ul class="timers">',
+        '<li>',
+          '<canvas id="timer-0" width="50" height="68"></canvas>',
+        '</li>',
+        '<li>',
+          '<canvas id="timer-1" width="50" height="68"></canvas>',
+        '</li>',
+        '<li>',
+          '<canvas id="timer-2" width="50" height="68"></canvas>',
+        '</li>',
+      '<ul>',
     '</div>'
   ].join(''));
   for (var i=0; i<3; i++) {
     timers.push(new Timer(i, 15));
-    // timer.getChart();
   }
-
 }
 
 function showTimers () {
   $(".showdown").show();
+}
+
+function posterClick (evt) {
+  evt.preventDefault();
+  evt.stopPropagation();
+  // console.log('posterClick');
+  var $target = $(evt.currentTarget);
+  var id = evt.currentTarget.parentNode.id;
+  movieSelected($target.parent().parent(), id);
 }
 
 function pickMovie () {
@@ -580,29 +597,43 @@ function startNextTimer () {
 function launchModal () {
   var modalHTML = [
     '<div class="modal-timer">',
-      '<canvas id="timer-3" width="70" height="90"></canvas>',
-      '<canvas id="timer-4" width="70" height="90" class="timer-hidden"></canvas>',
+      '<p>',
+        'Final Showdown',
+      '</p>',
+      '<div>',
+        '<canvas id="timer-3" width="70" height="70"></canvas>',
+        '<canvas id="timer-4" width="70" height="70" class="timer-hidden"></canvas>',
+      '</div>',
     '</div>',
   ].join('');
   $('.showdown').prepend($(modalHTML));
+  $('<div class="modal-backdrop" />').appendTo(document.body);
   convertToModal();
-  timers.push(new Timer(3, 15, '#7602D2'));
+  timers.push(new Timer(3, 15));
+
   // timers[3].getChart();
   timers[3].start(pickWinner);
   console.log(timers[3]);
 }
 
 function convertToModal () {
-  $('.showdown').addClass('showdown-modal');
+  $('.showdown').addClass('showdown-modal sd');
+  $('.mrows a').off();
+
   _.each(timers, function (timer) {
     timer.$target.toggleClass('selected finalist');
+    timer.$target.find('a').off();
     // console.log(timer.$target);
     // console.log(timer.targetId);
     // modal.append(timer.$target);
-    timer.$target.on('click', function (evt) {
+    timer.$target.one('click', function (evt) {
       evt.preventDefault();
+      evt.stopPropagation();
       console.log(evt);
       timers[3].stop();
+      _.each(timers, function (timer) {
+        timer.$target.off();
+      });
       showWinner($(evt.currentTarget));
     });
   });
@@ -625,8 +656,9 @@ function getWinnerUrl (winner) {
 }
 
 function finalCountdown (winner) {
+  $('.modal-timer p').text("It's Showtime!");
   timers[3].$el.hide();
-  var finalTimer = new Timer(4, 10, 'green');
+  var finalTimer = new Timer(4, 5);
   timers.push(finalTimer);
   finalTimer.$el.removeClass('timer-hidden');
   // finalTimer.getChart();
@@ -702,12 +734,25 @@ $(document).ready(function() {
   addTimers();
 
   var $showdown = $('#nav-showdown-link');
-  $showdown.on('click', function (evt) {
+  $showdown.one('click', function (evt) {
     $showdown.hide();
     $('.mrows').addClass('sd');
     showTimers();
     timers[0].start(getRandom);
+
+    $('.mrows a').one('click', posterClick);
   });
 
   getAllIds();
 });
+
+/*
+popover
+rated
+  class = ".stbrMaskFg .sbmfrt .sbmf-50"
+  sbmf-50 = rated 5 stars
+
+unrated
+  stbrMaskFg sbmfpr sbmf-34
+  best guess = 3.4 stars
+*/
