@@ -1,14 +1,14 @@
 {
     "manifest_version": 2,
     "name" : "Netflix Showdown",
-    "version" : "0.1.7",
+    "version" : "0.1.8",
     "author" : "tinj",
     "description" : "Quickly decide what to watch on Netflix",
     "options_page": "html/options.html",
     "content_scripts": [
             {
               "matches": ["http://*.netflix.com/*"],
-              "js": ["libs/jquery-2.0.3.min.js", "libs/moment.min.js", "libs/chart.doughnut.js", "libs/underscore-min.js", "js/showdown.js"]
+              "js": ["libs/jquery-2.0.3.min.js", "libs/moment.min.js", "libs/chart.doughnut.js", "libs/underscore-min.js", "js/stopwatch.js",  "js/timer.js", "js/showdown.js"]
             }
         ],
     "permissions": [

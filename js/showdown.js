@@ -420,99 +420,6 @@ var timerTimes = {
 var timeIndex = 1;
 
 
-var Timer = function (id, duration, color) {
-  this.init = function (id, duration, color) {
-    this.id = id;
-    this.color = color || 'white';
-    this.movie = '';
-    this.url = '';
-    this.duration = duration;
-    this.durationMS = duration * 1000;
-    // this.timeRemaining = timeRemaining || 30;
-    // this.timeStart = timeRemaining || 30;
-    this.$el = $('#timer-'+id);
-
-    this.chart = getChart(this.$el, id, this.formatTime());
-  };
-
-  this.start = function (callback) {
-    var that = this;
-    that.moment = moment();
-    if (callback) {
-      that.$el.one('click', function (evt) {
-        evt.preventDefault();
-        that.stop();
-        callback();
-      });
-    }
-    that.interval = setInterval(function () {
-      that.updateChart();
-
-      if (0 >= that.timeRemaining()) {
-        that.stop();
-        if (callback) callback();
-      }
-    }, 20);
-  };
-
-  this.stop = function () {
-    if (this.interval) {
-      clearInterval(this.interval);
-      this.interval = undefined;
-      this.updateChart();
-    }
-  };
-
-  this.updateChart = function () {
-    this.chart.update(this.formatTime());
-  };
-
-  this.timeRemaining = function () {
-    if (this.moment) {
-      return this.durationMS + this.moment.diff();
-    } else {
-      return this.durationMS;
-    }
-  };
-
-  this.formatTime = function () {
-    return [
-      {
-        value : this.timeRemaining(),
-        color : this.color || 'white'
-      },
-      {
-        value: this.durationMS - this.timeRemaining(),
-        color : 'none'
-      }
-    ];
-  };
-
-  // this.removeChart = function () {
-  //   this.$el.remove();
-  // };
-
-  this.init(id, duration, color);
-};
-
-
-function getChart ($el, id, data) {
-  var ctx = $el[0].getContext('2d');
-  return new Chart(ctx).Doughnut(data, {
-    animation: true,
-    percentageInnerCutout: 80,
-    count: true,
-    countColor: 0,
-    countModifier: 1000, // milliseconds
-    placeNumber: ['1st','2nd','3rd'][id],
-    segmentShowStroke: false,
-    // segmentStrokeWidth: 1,
-    // segmentStrokeColor: "#000",
-    onAnimationComplete: function () {
-      this.animation = false;
-    }
-  });
-}
 
 var allMovies = [];//['dbs70143836_0','dbs70230088_0','dbs70242311_0'];
 
@@ -630,7 +537,6 @@ function launchModal () {
   convertToModal();
   timers.push(new Timer(3, timerTimes[timeIndex][3]));
 
-  // timers[3].getChart();
   timers[3].start(pickWinner);
   console.log(timers[3]);
 }
@@ -698,73 +604,7 @@ function startPlaying (url) {
 
 
 
-var Stopwatch = function (color) {
-  this.init = function (color) {
-    this.color = color || 'white';
-    this.$el = $('#stopwatch');
 
-    this.moment = moment();
-    this.chart = this.getChart();
-    this.start(startShowdown);
-  };
-
-  this.start = function (callback) {
-    var that = this;
-    console.log('start');
-    if (callback) {
-      that.$el.one('click', function (evt) {
-        evt.preventDefault();
-        that.stop();
-        callback();
-      });
-    }
-    that.interval = setInterval(function () {
-      that.updateChart();
-    }, 20);
-  };
-
-  this.stop = function () {
-    if (this.interval) {
-      console.log('stopwatch stopped');
-      clearInterval(this.interval);
-      this.interval = undefined;
-      this.updateChart();
-    }
-  };
-
-  this.getChart = function () {
-    var ctx = this.$el[0].getContext('2d');
-    return new Chart(ctx).Doughnut(this.formatTime(), {
-      animation: true,
-      percentageInnerCutout: 80,
-      count: true,
-      countColor: 0,
-      mod: 60000,
-      countModifier: 1000, // milliseconds
-      segmentShowStroke: false,
-      // segmentStrokeWidth: 1,
-      // segmentStrokeColor: "#fff",
-      onAnimationComplete: function () {
-        this.animation = false;
-      }
-    });
-  };
-
-  this.updateChart = function () {
-    this.chart.update(this.formatTime());
-  };
-
-  this.formatTime = function () {
-    return [
-      {
-        value : -this.moment.diff(),
-        color : this.color || 'white'
-      }
-    ];
-  };
-
-  this.init(color);
-};
 
 var $showdown, stopwatch, autoplay = true;
 
@@ -818,7 +658,7 @@ function addStopwatch () {
   ].join('');
 
   $('#global-header').append(stopwatchHTML);
-  stopwatch = new Stopwatch('#fff'); //'#7602D2'
+  stopwatch = new Stopwatch($('#stopwatch'), '#fff', startShowdown); //'#7602D2'
 
   // get and set autoplay setting
   chrome.runtime.sendMessage({method: "getLocalStorage", key: "autoplay"}, function (response) {
