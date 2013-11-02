@@ -672,13 +672,22 @@ function getWinnerUrl (winner) {
 
 function finalCountdown (winner) {
   $('.modal-timer p').text("It's Showtime!");
+  $('.showdown-modal').removeClass('sd');
+  $('.popover-add').remove();
   timers[3].$el.hide();
-  var finalTimer = new Timer(4, 7);
-  timers.push(finalTimer);
-  finalTimer.$el.removeClass('timer-hidden');
-  finalTimer.start(function () {
-    startPlaying(getWinnerUrl(winner));
-  });
+  if (autoplay) {
+    var finalTimer = new Timer(4, 7);
+    timers.push(finalTimer);
+    finalTimer.$el.removeClass('timer-hidden');
+    $('.modal-timer').append('<a href="#" id="reset">Reset</a>');
+    $('#reset').one("click", function () {
+      finalTimer.stop();
+      location.reload();
+    });
+    finalTimer.start(function () {
+      startPlaying(getWinnerUrl(winner));
+    });
+  }
 }
 
 function startPlaying (url) {
@@ -757,7 +766,7 @@ var Stopwatch = function (color) {
   this.init(color);
 };
 
-var $showdown, stopwatch;;
+var $showdown, stopwatch, autoplay = true;
 
 function startShowdown (evt) {
   // console.log(evt);
@@ -789,25 +798,44 @@ function addStopwatch () {
         '<span class="right-arrow"></span>',
       '</span>',
       '<span class="i-b shim"></span>',
-      '<div class="subnav-wrap col-1">',
+      '<div class="subnav-wrap col-2">',
         '<ul class="subnav-tabs">',
-          "<li><p id='nav-title'>Time's ticking ...</p></li>",
+          "<li><p class='nav-title'>Time's ticking ...</p></li>",
           '<li><a href="#" value="1">1 minute Showdown</a></li>',
           '<li><a href="#" value="3">3 minute Showdown</a></li>',
           '<li><a href="#" value="5">5 minute Showdown</a></li>',
         '</ul>',
-        '</div>',
+        '<ul class="subnav-settings">',
+          "<li><p class='nav-settings'>Settings</p></li>",
+          '<li><input id="sd-autoplay" type="checkbox"><a href="#">Autoplay</a></input></li>',
+        '</ul>',
+      '</div>',
       '<span class="up-arrow"></span>',
       '<span class="down-arrow"></span>',
       '<span class="down-arrow-shadow"></span>',
     '</li>',
   ].join('');
 
-  var $navbar = $('#global-header');
-  $navbar.append(stopwatchHTML);
+  $('#global-header').append(stopwatchHTML);
   stopwatch = new Stopwatch('#fff'); //'#7602D2'
-  // console.log(stopwatch);
 
+  // get and set autoplay setting
+  chrome.runtime.sendMessage({method: "getLocalStorage", key: "autoplay"}, function (response) {
+    if (response) {
+      autoplay = response.data == "true";
+    }
+    console.log('autoplay: ', autoplay);
+    $('#sd-autoplay').prop('checked', autoplay);
+  });
+
+  // update autoplay setting
+  $('#sd-autoplay').click(function () {
+    autoplay = $('#sd-autoplay').prop('checked');
+    console.log('autoplay: ', autoplay);
+    chrome.runtime.sendMessage({method: "setLocalStorage", key: "autoplay", val: autoplay}, function (response) {
+      console.log(response);
+    });
+  });
 
   $showdown = $('#nav-showdown');
   $showdown.find('a').one('click', startShowdown);
@@ -819,9 +847,6 @@ $(document).ready(function() {
   //common select objects
   console.log('document ready');
 
-  // chrome.runtime.sendMessage({method: "getLocalStorage", key: "total_time"}, function (response) {
-  //   console.log(response.data);
-  // });
 
 
   var dvdSelObj = selectObj('.bobMovieRatings', 'append', 800, 'dvd-popup');

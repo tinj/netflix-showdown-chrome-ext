@@ -115,8 +115,28 @@
   padding-left: 1%;
 }
 
-#nav-title {
+#nav-showdown .subnav-wrap {
+  left: -85px;
+  width: 265px;
+}
+
+.subnav-wrap .subnav-settings {
+  width: 100px;
+}
+
+.nav-settings {
+  color: #000;
+}
+
+.nav-title {
   margin-left: 18px;
+}
+
+#reset {
+  position: absolute;
+  right: 11px;
+  top: 8px;
+  color: #fff;
 }
 
 .showdown {
