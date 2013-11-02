@@ -122,6 +122,18 @@
 
 .subnav-wrap .subnav-settings {
   width: 100px;
+  font-size: 13px;
+  /*padding: 4px 18px;*/
+  color: #000;
+}
+
+.subnav-wrap .subnav-settings input {
+  margin-right: 7px;
+}
+
+.subnav-wrap .subnav-settings li {
+  margin-top: 4px;
+  margin-bottom: 4px;
 }
 
 .nav-settings {

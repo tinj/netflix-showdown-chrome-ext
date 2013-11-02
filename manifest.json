@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name" : "Netflix Showdown",
-    "version" : "0.1.6",
+    "version" : "0.1.7",
     "author" : "tinj",
     "description" : "Quickly decide what to watch on Netflix",
     "options_page": "html/options.html",

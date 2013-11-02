@@ -807,7 +807,8 @@ function addStopwatch () {
         '</ul>',
         '<ul class="subnav-settings">',
           "<li><p class='nav-settings'>Settings</p></li>",
-          '<li><input id="sd-autoplay" type="checkbox"><a href="#">Autoplay</a></input></li>',
+          '<li><input id="sd-autoplay" type="checkbox">Autoplay</input></li>',
+          '<li><input id="sd-hide" type="checkbox">Hide</input></li>',
         '</ul>',
       '</div>',
       '<span class="up-arrow"></span>',
@@ -838,7 +839,11 @@ function addStopwatch () {
   });
 
   $showdown = $('#nav-showdown');
-  $showdown.find('a').one('click', startShowdown);
+  $showdown.find('subnav-tabs a').one('click', startShowdown);
+  $('#sd-hide').one('click', function () {
+    stopwatch.stop();
+    $showdown.hide();
+  });
 }
 
 
