@@ -559,7 +559,7 @@ function addMovieClick (evt) {
 
 function pickMovie () {
   console.log('pick random');
-  return allMovies.splice(Math.floor(allMovies.length * Math.random()), 1);
+  return allMovies.splice(Math.floor(allMovies.length * Math.random()), 1)[0];
 }
 
 function getRandom () {
@@ -585,7 +585,7 @@ function movieSelected ($el, id) {
     timer.targetId = id;
     startNextTimer();
   } else {
-    console.log($el);
+    // console.log($el);
     showWinner($el);
   }
 }
@@ -631,7 +631,7 @@ function convertToModal () {
     timer.$target.one('click', function (evt) {
       evt.preventDefault();
       evt.stopPropagation();
-      console.log(evt);
+      // console.log(evt);
       showWinner($(evt.currentTarget));
     });
   });
