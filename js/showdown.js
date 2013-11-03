@@ -428,9 +428,93 @@ var $navShowdown;
 
 // functions
 
+// setup
+function addStopwatch () {
+    var stopwatchHTML = [
+    '<li id="nav-showdown" class="bg-purple nav-item dropdown-trigger">',
+      '<span class="i-b content">',
+        // '<a href="#" id="nav-showdown-link">Showdown</a>',
+        '<canvas id="stopwatch" width="60" height="60"></canvas>',
+        '<span class="right-arrow"></span>',
+      '</span>',
+      '<span class="i-b shim"></span>',
+      '<div class="subnav-wrap col-2">',
+        '<ul class="subnav-tabs">',
+          "<li><p class='nav-title'>Time's ticking ...</p></li>",
+          '<li><a href="#" value="1" class="sd-time">1 minute Showdown</a></li>',
+          '<li><a href="#" value="3" class="sd-time">3 minute Showdown</a></li>',
+          '<li><a href="#" value="5" class="sd-time">5 minute Showdown</a></li>',
+        '</ul>',
+        '<ul class="subnav-settings">',
+          "<li><p class='nav-settings'>Settings</p></li>",
+          '<li><input id="sd-autoplay" type="checkbox">Autoplay</input></li>',
+          '<li><input id="sd-hide" type="checkbox">Hide</input></li>',
+        '</ul>',
+      '</div>',
+      '<span class="up-arrow"></span>',
+      '<span class="down-arrow"></span>',
+      '<span class="down-arrow-shadow"></span>',
+    '</li>',
+  ].join('');
+
+  $('#global-header').append(stopwatchHTML);
+  stopwatch = new Stopwatch($('#stopwatch'), '#fff', startShowdown); //'#7602D2'
+
+  // get and set autoplay setting
+  chrome.runtime.sendMessage({method: "getLocalStorage", key: "autoplay"}, function (response) {
+    if (response) {
+      autoplay = response.data == "true";
+    }
+    console.log('autoplay: ', autoplay);
+    $('#sd-autoplay').prop('checked', autoplay);
+  });
+
+  // update autoplay setting
+  $('#sd-autoplay').click(function () {
+    autoplay = $('#sd-autoplay').prop('checked');
+    console.log('autoplay: ', autoplay);
+    chrome.runtime.sendMessage({method: "setLocalStorage", key: "autoplay", val: autoplay}, function (response) {
+      console.log(response);
+    });
+  });
+
+  $navShowdown = $('#nav-showdown');
+  $('.sd-time').one('click', startShowdown);
+  $('#sd-hide').one('click', function () {
+    stopwatch.stop();
+    $navShowdown.hide();
+  });
+}
+
+
+
+
 function getAllIds () {
   allMovies = _.chain($('.boxShot')).pluck('id').uniq().value();
   console.log('allMovies: ', allMovies.length);
+}
+
+
+// start
+
+function startShowdown (evt) {
+  // console.log(evt);
+  timeIndex = evt ? parseInt(evt.target.attributes[1].value) : 1;
+  console.log('%d minute showdown', timeIndex);
+  addTimers();
+
+  stopwatch.stop();
+  $navShowdown.hide(); // hide nav stopwatch and menu
+  $('.mrows').addClass('sd');
+  $popover = $('#BobMovie');
+  $popover.find('.bobContent').addClass('sd');
+  $popover.append('<span class="popover-add"><a href="#"><div>+</div></a></span>');
+  $popover.find('.popover-add').on('click', addMovieClick);
+  $showdown.show();
+  timers[0].start(getRandom);
+
+  getAllIds();
+  $('.mrows a').one('click', posterClick);
 }
 
 function addTimers () {
@@ -450,20 +534,15 @@ function addTimers () {
     '</div>'
   ].join('')).hide().prependTo('#bd');
   for (var i=0; i<3; i++) {
-    // console.log(i, timeIndex, timerTimes[timeIndex], timerTimes[timeIndex][i]);
     timers.push(new Timer(i, timerTimes[timeIndex][i]));
   }
   $showdown = $('.showdown');
 }
 
-function showTimers () {
-  $showdown.show();
-}
-
 function posterClick (evt) {
   evt.preventDefault();
   evt.stopPropagation();
-  // console.log('posterClick');
+  $popover.hide();
   var $target = $(evt.currentTarget);
   var id = evt.currentTarget.parentNode.id;
   movieSelected($target.parent().parent(), id);
@@ -471,16 +550,16 @@ function posterClick (evt) {
 
 function addMovieClick (evt) {
   evt.preventDefault();
-  console.log(evt);
-  var id = $popover.find('.agMovie .bobMovieContent a').prop('id');
+  var posterId = $popover.find('.agMovie .bobMovieContent a').prop('id');
   $popover.hide();
-  console.log(id);
-  movieSelected($('#'+id).parent().parent(), id);
+  var $temp = $('#'+posterId).parent();
+  var id = $temp.prop('id');
+  movieSelected($temp.parent(), id);
 }
 
 function pickMovie () {
   console.log('pick random');
-  return allMovies.splice(Math.floor(allMovies.length * Math.random()), 1); // allMovies.length
+  return allMovies.splice(Math.floor(allMovies.length * Math.random()), 1);
 }
 
 function getRandom () {
@@ -490,6 +569,8 @@ function getRandom () {
 }
 
 function movieSelected ($el, id) {
+  console.log(id);
+
   if (timers.length <= 3) {
     var timer = timers[currTimer];
     var $img = $el.find('img');
@@ -505,7 +586,6 @@ function movieSelected ($el, id) {
     startNextTimer();
   } else {
     console.log($el);
-    console.log(id);
     showWinner($el);
   }
 }
@@ -539,7 +619,6 @@ function launchModal () {
   timers.push(new Timer(3, timerTimes[timeIndex][3]));
 
   timers[3].start(pickWinner);
-  console.log(timers[3]);
 }
 
 function convertToModal () {
@@ -603,90 +682,10 @@ function startPlaying (url) {
 }
 
 
-function startShowdown (evt) {
-  // console.log(evt);
-  timeIndex = evt ? parseInt(evt.target.attributes[1].value) : 1;
-  console.log(timeIndex, ' minute showdown');
-  addTimers();
-
-  stopwatch.stop();
-  $navShowdown.hide(); // hide nav stopwatch and menu
-  $('.mrows').addClass('sd');
-  $popover = $('#BobMovie');
-  $popover.find('.bobContent').addClass('sd');
-  $popover.append('<span class="popover-add"><a href="#"><div>+</div></a></span>');
-  $popover.find('.popover-add').on('click', addMovieClick);
-  showTimers();
-  timers[0].start(getRandom);
-
-  getAllIds();
-  $('.mrows a').one('click', posterClick);
-
-}
-
-function addStopwatch () {
-    var stopwatchHTML = [
-    '<li id="nav-showdown" class="bg-purple nav-item dropdown-trigger">',
-      '<span class="i-b content">',
-        // '<a href="#" id="nav-showdown-link">Showdown</a>',
-        '<canvas id="stopwatch" width="60" height="60"></canvas>',
-        '<span class="right-arrow"></span>',
-      '</span>',
-      '<span class="i-b shim"></span>',
-      '<div class="subnav-wrap col-2">',
-        '<ul class="subnav-tabs">',
-          "<li><p class='nav-title'>Time's ticking ...</p></li>",
-          '<li><a href="#" value="1" class="sd-time">1 minute Showdown</a></li>',
-          '<li><a href="#" value="3" class="sd-time">3 minute Showdown</a></li>',
-          '<li><a href="#" value="5" class="sd-time">5 minute Showdown</a></li>',
-        '</ul>',
-        '<ul class="subnav-settings">',
-          "<li><p class='nav-settings'>Settings</p></li>",
-          '<li><input id="sd-autoplay" type="checkbox">Autoplay</input></li>',
-          '<li><input id="sd-hide" type="checkbox">Hide</input></li>',
-        '</ul>',
-      '</div>',
-      '<span class="up-arrow"></span>',
-      '<span class="down-arrow"></span>',
-      '<span class="down-arrow-shadow"></span>',
-    '</li>',
-  ].join('');
-
-  $('#global-header').append(stopwatchHTML);
-  stopwatch = new Stopwatch($('#stopwatch'), '#fff', startShowdown); //'#7602D2'
-
-  // get and set autoplay setting
-  chrome.runtime.sendMessage({method: "getLocalStorage", key: "autoplay"}, function (response) {
-    if (response) {
-      autoplay = response.data == "true";
-    }
-    console.log('autoplay: ', autoplay);
-    $('#sd-autoplay').prop('checked', autoplay);
-  });
-
-  // update autoplay setting
-  $('#sd-autoplay').click(function () {
-    autoplay = $('#sd-autoplay').prop('checked');
-    console.log('autoplay: ', autoplay);
-    chrome.runtime.sendMessage({method: "setLocalStorage", key: "autoplay", val: autoplay}, function (response) {
-      console.log(response);
-    });
-  });
-
-  $navShowdown = $('#nav-showdown');
-  $('.sd-time').one('click', startShowdown);
-  $('#sd-hide').one('click', function () {
-    stopwatch.stop();
-    $navShowdown.hide();
-  });
-}
-
-
 ///////// INIT /////////////
 $(document).ready(function() {
   //common select objects
   console.log('document ready');
-
 
 
   var dvdSelObj = selectObj('.bobMovieRatings', 'append', 800, 'dvd-popup');
