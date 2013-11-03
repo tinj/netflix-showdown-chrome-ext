@@ -406,8 +406,11 @@ function getShowdownHtml(title, klass) {
 }
 
 
-// showdown timer
-// var timeRemaining = 60;
+
+// Showdown
+
+
+// vars
 var timers = [];
 var currTimer = 0;
 
@@ -418,17 +421,16 @@ var timerTimes = {
 };
 
 var timeIndex = 1;
+var allMovies = [];
+var $showdown, stopwatch, autoplay = true;
+var $popover;
+var $navShowdown;
 
-
-
-var allMovies = [];//['dbs70143836_0','dbs70230088_0','dbs70242311_0'];
+// functions
 
 function getAllIds () {
-  var list = $('.boxShot');
-  allMovies = _.map(list, function (el) {
-    return el.id;
-  });
-  console.log(allMovies);
+  allMovies = _.chain($('.boxShot')).pluck('id').uniq().value();
+  console.log('allMovies: ', allMovies.length);
 }
 
 function addTimers () {
@@ -451,10 +453,11 @@ function addTimers () {
     // console.log(i, timeIndex, timerTimes[timeIndex], timerTimes[timeIndex][i]);
     timers.push(new Timer(i, timerTimes[timeIndex][i]));
   }
+  $showdown = $('.showdown');
 }
 
 function showTimers () {
-  $(".showdown").show();
+  $showdown.show();
 }
 
 function posterClick (evt) {
@@ -469,7 +472,6 @@ function posterClick (evt) {
 function addMovieClick (evt) {
   evt.preventDefault();
   console.log(evt);
-  var $popover = $('#BobMovie');
   var id = $popover.find('.agMovie .bobMovieContent a').prop('id');
   $popover.hide();
   console.log(id);
@@ -478,7 +480,6 @@ function addMovieClick (evt) {
 
 function pickMovie () {
   console.log('pick random');
-  // return allMovies.pop();
   return allMovies.splice(Math.floor(allMovies.length * Math.random()), 1); // allMovies.length
 }
 
@@ -531,9 +532,9 @@ function launchModal () {
       '</div>',
     '</div>',
   ].join('');
-  $('.showdown').prepend($(modalHTML));
+  $showdown.prepend($(modalHTML));
   $('<div class="modal-backdrop" />').appendTo(document.body);
-  $('#BobMovie').hide(); // hide popover
+  $popover.hide(); // hide popover
   convertToModal();
   timers.push(new Timer(3, timerTimes[timeIndex][3]));
 
@@ -542,7 +543,7 @@ function launchModal () {
 }
 
 function convertToModal () {
-  $('.showdown').addClass('showdown-modal sd');
+  $showdown.addClass('showdown-modal sd');
   $('.mrows a').off();
 
   _.each(timers, function (timer) {
@@ -602,22 +603,16 @@ function startPlaying (url) {
 }
 
 
-
-
-
-
-var $showdown, stopwatch, autoplay = true;
-
 function startShowdown (evt) {
   // console.log(evt);
   timeIndex = evt ? parseInt(evt.target.attributes[1].value) : 1;
-  console.log(timeIndex);
+  console.log(timeIndex, ' minute showdown');
   addTimers();
 
   stopwatch.stop();
-  $showdown.hide();
+  $navShowdown.hide(); // hide nav stopwatch and menu
   $('.mrows').addClass('sd');
-  var $popover = $('#BobMovie');
+  $popover = $('#BobMovie');
   $popover.find('.bobContent').addClass('sd');
   $popover.append('<span class="popover-add"><a href="#"><div>+</div></a></span>');
   $popover.find('.popover-add').on('click', addMovieClick);
@@ -641,9 +636,9 @@ function addStopwatch () {
       '<div class="subnav-wrap col-2">',
         '<ul class="subnav-tabs">',
           "<li><p class='nav-title'>Time's ticking ...</p></li>",
-          '<li><a href="#" value="1">1 minute Showdown</a></li>',
-          '<li><a href="#" value="3">3 minute Showdown</a></li>',
-          '<li><a href="#" value="5">5 minute Showdown</a></li>',
+          '<li><a href="#" value="1" class="sd-time">1 minute Showdown</a></li>',
+          '<li><a href="#" value="3" class="sd-time">3 minute Showdown</a></li>',
+          '<li><a href="#" value="5" class="sd-time">5 minute Showdown</a></li>',
         '</ul>',
         '<ul class="subnav-settings">',
           "<li><p class='nav-settings'>Settings</p></li>",
@@ -678,11 +673,11 @@ function addStopwatch () {
     });
   });
 
-  $showdown = $('#nav-showdown');
-  $showdown.find('subnav-tabs a').one('click', startShowdown);
+  $navShowdown = $('#nav-showdown');
+  $('.sd-time').one('click', startShowdown);
   $('#sd-hide').one('click', function () {
     stopwatch.stop();
-    $showdown.hide();
+    $navShowdown.hide();
   });
 }
 
